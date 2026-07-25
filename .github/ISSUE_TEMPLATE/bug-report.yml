@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a reproducible problem in Betaflight RX Monitor.
+title: "[Bug]: "
+body:
+  - type: checkboxes
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I tested with all propellers removed.
+          required: true
+  - type: input
+    attributes:
+      label: Version
+      placeholder: v0.1.0-alpha.1
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Browser and operating system
+      placeholder: Chrome 000 on Windows 11
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Flight controller and Betaflight version
+      placeholder: Target, MCU, Betaflight version and MSP API
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      placeholder: Numbered, minimal reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual result and event log
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Reproduces in Demo mode?
+      options:
+        - Not tested
+        - "Yes"
+        - "No"
+    validations:
+      required: true

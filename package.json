@@ -1,0 +1,17 @@
+{
+  "name": "betaflight-rx-monitor",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Read-only Betaflight RX monitoring and audio alarms over Web Serial",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check server.mjs && node --check public/app.js && node --check public/alarm.js && node --check public/monitor.js && node --check public/msp.js",
+    "test": "node --test",
+    "verify": "npm run check && npm test"
+  }
+}

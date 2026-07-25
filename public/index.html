@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="Read-only Betaflight RX monitoring, USB reconnect detection and configurable audio alarms."
+    />
+    <meta name="theme-color" content="#07100f" />
+    <title>Betaflight RX Monitor – Pre-release</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">PRE-RELEASE v0.1.0-alpha.1 · READ-ONLY MSP</p>
+          <h1>Betaflight RX Monitor</h1>
+          <p class="subtitle">Monitor receiver status, test thresholds, hear alarms.</p>
+        </div>
+        <div class="connection-actions">
+          <span id="connectionBadge" class="badge neutral">Disconnected</span>
+          <button id="connectButton" class="button primary">Connect flight controller</button>
+          <button id="disconnectButton" class="button secondary" hidden>Disconnect</button>
+          <button id="demoButton" class="button ghost">Start demo</button>
+          <label class="auto-reconnect">
+            <input id="autoReconnect" type="checkbox" checked />
+            <span>Auto-Reconnect</span>
+          </label>
+        </div>
+      </header>
+
+      <aside class="safety-note">
+        <strong>Bench test only:</strong> Remove all propellers. This pre-release does not prevent
+        arming. Close Betaflight Configurator before connecting.
+      </aside>
+
+      <section class="status-grid" aria-label="Live-Status">
+        <article id="rxCard" class="metric-card">
+          <div class="metric-heading">
+            <span>RX connection</span>
+            <span id="rxDot" class="status-dot neutral"></span>
+          </div>
+          <strong id="rxValue" class="metric-value">–</strong>
+          <span id="rxDetail" class="metric-detail">Waiting for flight controller</span>
+        </article>
+
+        <article id="rssiCard" class="metric-card">
+          <div class="metric-heading">
+            <span>RSSI</span>
+            <span class="source-tag">MSP_ANALOG</span>
+          </div>
+          <strong id="rssiValue" class="metric-value">–</strong>
+          <div class="meter"><span id="rssiBar"></span></div>
+          <span id="rssiDetail" class="metric-detail">Raw value 0–1023</span>
+        </article>
+
+        <article id="dataCard" class="metric-card">
+          <div class="metric-heading">
+            <span>Data connection</span>
+            <span class="source-tag">MSP</span>
+          </div>
+          <strong id="dataValue" class="metric-value">Idle</strong>
+          <span id="dataDetail" class="metric-detail">No data</span>
+        </article>
+      </section>
+      <p class="capability-note">
+        Link Quality is not displayed because Betaflight MSP 1.48 does not expose a numeric live
+        LQ value.
+      </p>
+
+      <section class="panel two-column">
+        <div>
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">ALARMS</p>
+              <h2>Rules</h2>
+            </div>
+            <button id="audioButton" class="button secondary">Enable audio</button>
+          </div>
+
+          <div class="rule-list">
+            <label class="rule-row">
+              <span>
+                <strong>RXLOSS</strong>
+                <small>Immediate critical alarm</small>
+              </span>
+              <input id="rxlossEnabled" type="checkbox" checked />
+            </label>
+
+            <div class="rule-row stacked">
+              <label for="rssiThreshold">
+                <span>
+                  <strong>Low RSSI</strong>
+                  <small>Alarm after a short minimum duration</small>
+                </span>
+                <input id="rssiEnabled" type="checkbox" checked />
+              </label>
+              <div class="range-line">
+                <input id="rssiThreshold" type="range" min="5" max="95" value="35" />
+                <output id="rssiThresholdValue">35 %</output>
+              </div>
+            </div>
+
+            <label class="rule-row">
+              <span>
+                <strong>Stale MSP data</strong>
+                <small>Alarm after 1.2 seconds without status data</small>
+              </span>
+              <input id="staleEnabled" type="checkbox" checked />
+            </label>
+          </div>
+
+          <div class="audio-settings">
+            <label for="volume">Volume</label>
+            <input id="volume" type="range" min="0" max="100" value="65" />
+          </div>
+          <div class="sound-previews" aria-label="Preview alarm sounds">
+            <button id="previewCritical" class="sound-preview danger-sound">
+              <span class="play-icon">▶</span>
+              <span><strong>RXLOSS / MSP failure</strong><small>Critical alarm</small></span>
+            </button>
+            <button id="previewWarning" class="sound-preview warning-sound">
+              <span class="play-icon">▶</span>
+              <span><strong>Low RSSI</strong><small>Warning</small></span>
+            </button>
+            <button id="previewDisconnect" class="sound-preview disconnect-sound">
+              <span class="play-icon">▶</span>
+              <span><strong>USB disconnected</strong><small>Connection lost</small></span>
+            </button>
+            <button id="previewReconnect" class="sound-preview reconnect-sound">
+              <span class="play-icon">▶</span>
+              <span><strong>USB reconnected</strong><small>Auto-reconnect succeeded</small></span>
+            </button>
+            <button id="previewRecovery" class="sound-preview recovery-sound">
+              <span class="play-icon">▶</span>
+              <span><strong>Value back to normal</strong><small>Recovery</small></span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">RC INPUT</p>
+              <h2>Channels</h2>
+            </div>
+            <span id="channelCount" class="source-tag">0 channels</span>
+          </div>
+          <div id="channelList" class="channel-list">
+            <p class="empty-state">Active RC channels will appear here after connecting.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="demoPanel" class="panel demo-panel" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SIMULATION</p>
+            <h2>Test alarm behavior without hardware</h2>
+          </div>
+          <span class="badge demo">Demo active</span>
+        </div>
+        <div class="demo-controls">
+          <label>
+            <span>Simulated RSSI <output id="demoRssiValue">80 %</output></span>
+            <input id="demoRssi" type="range" min="0" max="100" value="80" />
+          </label>
+          <label class="danger-toggle">
+            <span>Simulate RXLOSS</span>
+            <input id="demoRxloss" type="checkbox" />
+          </label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SESSION</p>
+            <h2>Event log</h2>
+          </div>
+          <button id="clearLogButton" class="button ghost">Clear</button>
+        </div>
+        <ol id="eventLog" class="event-log" aria-live="polite"></ol>
+      </section>
+
+      <footer>
+        <span id="fcInfo">No flight controller detected</span>
+        <span>v0.1.0-alpha.1 · Status 10 Hz · RSSI 4 Hz · RC 10 Hz · Single-flight</span>
+      </footer>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

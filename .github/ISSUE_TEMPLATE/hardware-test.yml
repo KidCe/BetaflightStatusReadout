@@ -1,0 +1,49 @@
+name: Hardware test report
+description: Share a successful or unsuccessful alpha hardware test.
+title: "[Hardware]: "
+body:
+  - type: checkboxes
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I tested with all propellers removed.
+          required: true
+  - type: input
+    attributes:
+      label: Flight controller
+      placeholder: Manufacturer, target and MCU
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Betaflight and MSP API version
+      placeholder: Betaflight 2026.x, MSP API 1.48
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Receiver and protocol
+      placeholder: Receiver model and CRSF/ELRS, SBUS, FPort, Ghost, etc.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Browser and operating system
+      placeholder: Edge 000 on Windows 11
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Results
+      options:
+        - label: Initial USB connection worked
+        - label: RC channels updated
+        - label: RXLOSS alarm worked
+        - label: RSSI alarm worked
+        - label: USB disconnect sound worked
+        - label: Auto-reconnect worked
+        - label: USB reconnect sound worked
+  - type: textarea
+    attributes:
+      label: Notes, delays and event-log entries
+      description: Include approximate RXLOSS/reconnect delays and any MSP errors.
