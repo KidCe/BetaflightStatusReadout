@@ -1,5 +1,7 @@
 # Betaflight RX Monitor
 
+**Live app:** [Open the deployed GitHub Pages version](https://kidce.github.io/BetaflightStatusReadout/)
+
 > **Pre-release `v0.1.0-alpha.1`:** This is a read-only bench-testing tool for
 > early hardware feedback. Remove all propellers before connecting a flight
 > controller. Do not use it as an in-flight telemetry system.
@@ -16,8 +18,7 @@ Betaflight project.
 
 ### Hosted version
 
-The easiest option for testers is the GitHub Pages link shown in the
-repository description:
+The easiest option for testers is the [deployed GitHub Pages version](https://kidce.github.io/BetaflightStatusReadout/):
 
 1. Open the Pages URL in Chrome or Edge.
 2. Remove propellers and close Betaflight Configurator.
